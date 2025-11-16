@@ -67,7 +67,7 @@ function escapeHtml(str) {
 function fetchNearbyCafes(lat, lon, radius) {
     cafesLayer.clearLayers();
     var overpassUrl = 'https://overpass-api.de/api/interpreter';
-    var query = '[out:json][timeout:25];(node["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');way["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');relation["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + '););out center;';
+    var query = '[out:json][timeout:50];(node["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');way["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');relation["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + '););out center;';
 
     console.log('Querying Overpass for cafes:', {lat:lat, lon:lon, radius: radius});
 
