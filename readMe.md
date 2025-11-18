@@ -1,4 +1,4 @@
-# Map Of the World by Benir
+# Map Of the World By Benir
 
 Map of the world is an open source project that enables users to check the nearest cafes within the area that the user is located.
 
