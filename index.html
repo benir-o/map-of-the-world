@@ -22,25 +22,155 @@
         left: 0;
         right: 0;
       }
+      #banner {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 16px;
+        border-radius: 12px;
+        z-index: 999;
+        max-width: 320px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4),
+          0 0 0 2px rgba(255, 255, 255, 0.1);
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        display: none;
+        animation: slideInDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-left: 4px solid #ffd700;
+      }
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-40px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      #banner.show {
+        display: block;
+      }
+      #banner strong {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      #banner-icon {
+        font-size: 22px;
+        margin-right: 8px;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+      #banner p {
+        margin: 0 0 14px 0;
+        font-size: 13px;
+        opacity: 0.95;
+      }
+      #openBrowserBtn {
+        display: inline-block;
+        background: #ffd700;
+        color: #333;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-size: 13px;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+      }
+      #openBrowserBtn:hover {
+        background: #ffed4e;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);
+      }
+      #openBrowserBtn:active {
+        transform: translateY(-1px);
+      }
+      #closeBannerBtn {
+        background: rgba(255, 255, 255, 0.25);
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        float: right;
+        font-size: 20px;
+        padding: 4px 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #closeBannerBtn:hover {
+        background: rgba(255, 255, 255, 0.35);
+        transform: rotate(90deg);
+      }
     </style>
   </head>
   <body>
-    <div
-      style="
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: #fff;
-        padding: 10px;
-        border-radius: 5px;
-        z-index: 999;
-        max-width: 300px;
-      "
-    >
-      <strong>Note:</strong> For best results, open this link in your device's
-      main browser (Chrome, Safari, Edge), not in an in-app browser.
-    </div>
     <div id="map"></div>
+    <div id="banner">
+      <button
+        id="closeBannerBtn"
+        onclick="document.getElementById('banner').classList.remove('show')"
+      >
+        ✕
+      </button>
+      <strong><span id="banner-icon">⚠️</span> Open in Main Browser</strong>
+      <p>
+        Geolocation works best in Chrome, Safari, or Edge — not in social app
+        browsers.
+      </p>
+      <button id="openBrowserBtn" onclick="openInBrowser()">Open Now</button>
+    </div>
     <script src="streetmap.js"></script>
+    <script>
+      // Detect if page is opened in an in-app browser (Instagram, Facebook, etc.)
+      function isInAppBrowser() {
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        return /Instagram|FBAN|FBAV|FB_IAB|FBV|SamsungBrowser|UCBrowser|baiduboxapp|DuckDuckGo|OPT\/|Puffin|SogouSearch|WeChat|QQ|alipay|taobao|kakaotalk|naver|line|NAVER|Line/.test(
+          ua
+        );
+      }
+
+      // Universal deep-link that opens in main browser (works on iOS and Android)
+      function openInBrowser() {
+        var currentUrl = window.location.href;
+        var intent =
+          "intent://" +
+          currentUrl.replace(/^https?:\/\//, "") +
+          "#Intent;scheme=https;action=android.intent.action.VIEW;end";
+
+        // Try Android Intent first
+        window.location.href = intent;
+
+        // If Android Intent fails (iOS or fallback), try this after delay
+        setTimeout(function () {
+          window.location.href = currentUrl;
+        }, 500);
+      }
+
+      // Show banner only if in-app browser detected
+      if (isInAppBrowser()) {
+        document.getElementById("banner").classList.add("show");
+      }
+    </script>
   </body>
 </html>
