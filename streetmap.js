@@ -112,6 +112,6 @@ console.log("Starting geolocation request...");
 map.locate({
     setView: false,      // we already fit after finding + cafes
     maxZoom: 16,
-    watch: false,
+    watch: true,
     enableHighAccuracy: true
 });
