@@ -1,8 +1,8 @@
 # Map Of the World By Benir
 
-Map of the world is an open source project that enables users to check the nearest cafes within the area that the user is located.
+Map of the world is an open source project that enables users to check the nearest restaurants within the area that the user is located.
 
-Additionally, a user can view the Cafe's details, such as websites and even food that the cafe offers.
+Additionally, a user can view the restaurants' details, such as websites and the types of food they offer.
 
 ## The Earth
 

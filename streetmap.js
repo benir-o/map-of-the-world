@@ -7,8 +7,8 @@ L.tileLayer(
     }
 ).addTo(map);
 
-// Layer for cafe results
-var cafesLayer = L.layerGroup().addTo(map);
+// Layer for restaurant results
+var restaurantsLayer = L.layerGroup().addTo(map);
 
 // Variables to store marker and circle
 var currentMarker = null;
@@ -47,8 +47,8 @@ map.on('locationfound', function (e) {
         map.fitBounds(currentCircle.getBounds(), { maxZoom: 16 });
     }
 
-    // Fetch nearby cafes (1.5 km default)
-    fetchNearbyCafes(latlng.lat, latlng.lng, 1500);
+    // Fetch nearby restaurants (1.5 km default)
+    fetchNearbyRestaurants(latlng.lat, latlng.lng, 1500);
 });
 
 // 2. Listen for when location finding fails (e.g., user denies permission)
@@ -63,19 +63,19 @@ function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');
 }
 
-// Fetch nearby cafes using Overpass API (OpenStreetMap)
-function fetchNearbyCafes(lat, lon, radius) {
-    cafesLayer.clearLayers();
+// Fetch nearby restaurants using Overpass API (OpenStreetMap)
+function fetchNearbyRestaurants(lat, lon, radius) {
+    restaurantsLayer.clearLayers();
     var overpassUrl = 'https://overpass-api.de/api/interpreter';
-    var query = '[out:json][timeout:50];(node["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');way["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + ');relation["amenity"="cafe"](around:' + radius + ',' + lat + ',' + lon + '););out center;';
+    var query = '[out:json][timeout:50];(node["amenity"="restaurant"](around:' + radius + ',' + lat + ',' + lon + ');way["amenity"="restaurant"](around:' + radius + ',' + lat + ',' + lon + ');relation["amenity"="restaurant"](around:' + radius + ',' + lat + ',' + lon + '););out center;';
 
-    console.log('Querying Overpass for cafes:', { lat: lat, lon: lon, radius: radius });
+    console.log('Querying Overpass for restaurants:', { lat: lat, lon: lon, radius: radius });
 
     fetch(overpassUrl, { method: 'POST', body: query })
         .then(function (response) { return response.json(); })
         .then(function (data) {
             if (!data.elements || data.elements.length === 0) {
-                console.log('No cafes found within ' + radius + ' meters');
+                console.log('No restaurants found within ' + radius + ' meters');
                 return;
             }
 
@@ -84,7 +84,7 @@ function fetchNearbyCafes(lat, lon, radius) {
                 var elLon = el.lon || (el.center && el.center.lon);
                 if (!elLat || !elLon) return;
 
-                var name = (el.tags && (el.tags.name || el.tags['brand'])) || 'Cafe';
+                var name = (el.tags && (el.tags.name || el.tags['brand'])) || 'Restaurant';
                 var popup = '<b>' + escapeHtml(name) + '</b>';
                 if (el.tags) {
                     if (el.tags['addr:street']) popup += '<br/>' + escapeHtml(el.tags['addr:street']);
@@ -93,12 +93,12 @@ function fetchNearbyCafes(lat, lon, radius) {
                     if (el.tags.website) popup += '<br/><a href="' + escapeHtml(el.tags.website) + '" target="_blank">Website</a>';
                 }
 
-                L.marker([elLat, elLon]).addTo(cafesLayer).bindPopup(popup);
+                L.marker([elLat, elLon]).addTo(restaurantsLayer).bindPopup(popup);
             });
 
-            // Fit map to cafes if any were added
-            if (cafesLayer.getLayers().length) {
-                try { map.fitBounds(cafesLayer.getBounds(), { maxZoom: 16 }); } catch (e) { console.warn(e); }
+            // Fit map to restaurants if any were added
+            if (restaurantsLayer.getLayers().length) {
+                try { map.fitBounds(restaurantsLayer.getBounds(), { maxZoom: 16 }); } catch (e) { console.warn(e); }
             }
         })
         .catch(function (err) {
@@ -110,7 +110,7 @@ function fetchNearbyCafes(lat, lon, radius) {
 // 3. Start the location detection
 console.log("Starting geolocation request...");
 map.locate({
-    setView: false,      // we already fit after finding + cafes
+    setView: false,      // we already fit after finding restaurants/POIs
     maxZoom: 16,
     watch: false,
     enableHighAccuracy: true
